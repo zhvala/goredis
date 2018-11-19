@@ -13,12 +13,11 @@
 // under the License.
 
 /*
-Package redis implement a pure redis cluster client, meaning it doesn't
-support any cluster commands.
+Package redis implement a pure redis client.
 
-Create a new cluster client with specified options:
+Create a new redis client with specified options:
 
-    cluster, err := redis.NewCluster(
+    conn, err := redis.NewConn(
         &redis.Options{
     	StartNodes: []string{"127.0.0.1:7000", "127.0.0.1:7001", "127.0.0.1:7002"},
     	ConnTimeout: 50 * time.Millisecond,
@@ -30,21 +29,21 @@ Create a new cluster client with specified options:
 
 For basic usage:
 
-    cluster.Do("SET", "foo", "bar")
-    cluster.Do("INCR", "mycount", 1)
-    cluster.Do("LPUSH", "mylist", "foo", "bar")
-    cluster.Do("HMSET", "myhash", "f1", "foo", "f2", "bar")
+    conn.Do("SET", "foo", "bar")
+    conn.Do("INCR", "mycount", 1)
+    conn.Do("LPUSH", "mylist", "foo", "bar")
+    conn.Do("HMSET", "myhash", "f1", "foo", "f2", "bar")
 
 Use convert help functions to convert replies to int, float, string, etc:
 
-    reply, err := Int(cluster.Do("INCR", "mycount", 1))
-    reply, err := String(cluster.Do("GET", "foo"))
-    reply, err := Strings(cluster.Do("LRANGE", "mylist", 0, -1))
-    reply, err := StringMap(cluster.Do("HGETALL", "myhash"))
+    reply, err := Int(conn.Do("INCR", "mycount", 1))
+    reply, err := String(conn.Do("GET", "foo"))
+    reply, err := Strings(conn.Do("LRANGE", "mylist", 0, -1))
+    reply, err := StringMap(conn.Do("HGETALL", "myhash"))
 
 Use batch interface to pack multiple commands for pipelining:
 
-    batch := cluster.NewBatch()
+    batch := conn.NewBatch()
     batch.Put("LPUSH", "country_list", "France")
     batch.Put("LPUSH", "country_list", "Italy")
     batch.Put("LPUSH", "country_list", "Germany")

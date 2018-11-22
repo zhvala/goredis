@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/zhvala/redis-client-go"
+	"github.com/zhvala/goredis"
 )
 
 const kNumOfRoutine = 50

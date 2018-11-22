@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/zhvala/redis-client-go"
+	"github.com/zhvala/goredis"
 )
 
 func main() {

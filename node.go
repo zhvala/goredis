@@ -22,6 +22,7 @@ import (
 	"container/list"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"strconv"
 	"sync"
@@ -323,6 +324,20 @@ func (conn *redisConn) writeCommand(cmd string, args []interface{}) error {
 	return err
 }
 
+// readN read N bytes without CRLF.
+func (conn *redisConn) readN(n int) ([]byte, error) {
+	line := make([]byte, n+2)
+	_, err := io.ReadFull(conn.br, line)
+	if err != nil {
+		return nil, err
+	}
+
+	if line[n] != '\r' || line[n+1] != '\n' {
+		return nil, errors.New("invalid response")
+	}
+	return line[:n], err
+}
+
 // readLine read a single line terminated with CRLF.
 func (conn *redisConn) readLine() ([]byte, error) {
 	var line []byte
@@ -448,7 +463,8 @@ func (conn *redisConn) readReply() (interface{}, error) {
 			return nil, err
 		}
 
-		line, err = conn.readLine()
+		// line, err = conn.readLine()
+		line, err = conn.readN(n)
 		if err != nil {
 			return nil, err
 		}
